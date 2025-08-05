@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <title>Hashtag Banner Generator</title>
+  <style>
+    :root {
+      --default-background: linear-gradient(
+        to right bottom,
+        #F8C375, #FCDEBA
+      );
+      --default-color: #006332;
+    }
+    * {
+      font-family: sans-serif;
+      font-size: 8vw;
+    }
+    body {
+      margin: 0;
+    }
+
+    .inner {
+      display: inline-block;
+      position: relative;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+
+    .hashtag {
+      position: relative;
+      width: 100vw; height: calc(100vw / 3);
+      padding: 10vw;
+      background: var(--default-background);
+      color: var(--default-color);
+      font-weight: bold;
+      box-sizing: border-box;
+    }
+
+    button[onclick="convertToImage()"] {
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 15vw 0;
+      width: 30vw; height: 15vw;
+      border: none;
+      border-radius: 5vw;
+      padding: 0;
+      background: var(--default-background);
+      color: var(--default-color);
+      font-size: 1em;
+      font-weight: bold;
+      box-sizing: border-box;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="hashtag">
+    <span class="inner">#LetsChangeTheString</span>
+  </div>
+  <button onclick="convertToImage()">Convert</button>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+  <script>
+    const hashtag      = document.querySelector(".hashtag");
+    const hashtagStyle = getComputedStyle(hashtag);
+    const hashtagWidth = parseInt(hashtagStyle.width) - parseInt(hashtagStyle.padding);
+
+    const text         = hashtag.querySelector(".inner");
+    const textWidth    = text.getBoundingClientRect().width;
+
+    text.style.fontSize = `min(${(hashtagWidth / textWidth).toString()}em, 3em)`;
+
+
+    function btnAttrs(btn) {
+      btn.setAttribute('role', 'link');
+      btn.setAttribute('tabindex', '0');
+      btn.style.cursor = 'pointer';
+    }
+
+    document.querySelectorAll("button").forEach(el => btnAttrs(el));
+
+
+    function convertToImage() {
+      html2canvas(hashtag).then(canvas => {
+        const a = document.createElement("a");
+        a.download = `${text.textContent.trim()}.png`;
+        a.href = canvas.toDataURL();
+        a.target = "_blank";
+        a.click();
+      });
+    }
+  </script>
+</body>
+</html>
